@@ -16,7 +16,7 @@ def generate_python_code(yalexParser):
         token_rules=token_rules
     )
 
-def generate_python_lexer(yalexParser, output_dir="generated_lexers/"):
+def generate_python_lexer(yalexParser, output_dir="output/"):
     """Genera código Python basado en el archivo YALex"""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -34,7 +34,7 @@ def generate_python_lexer(yalexParser, output_dir="generated_lexers/"):
 # Procesar archivos .yal con YAlexParser
 # Input: input_dir, output_dir
 # Output: 
-def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="generated_lexers/"):
+def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="output/"):
     """Procesa todos los archivos .yal en input_dir y guarda los resultados en output_dir"""
     for filename in os.listdir(input_dir):
         if filename.endswith(".yal"):
