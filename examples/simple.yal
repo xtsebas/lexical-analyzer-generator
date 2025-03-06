@@ -1,1 +1,23 @@
-# Ejemplo de un YALex básico
+(* simple.yal - Analizador léxico básico *)
+(* Este archivo reconoce números enteros, operadores básicos y paréntesis *)
+{
+import myToken
+}
+
+let digit = ['0'-'9']
+let letter = ['a'-'z' 'A'-'Z']
+let id = letter (letter | digit)*
+let number = digit+
+
+rule gettoken =
+  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
+| '\n' { return EOL }
+| number { return int(lxm) }
+| '+' { return PLUS }
+| '-' { return MINUS }
+| '*' { return TIMES }
+| '/' { return DIV }
+| '(' { return LPAREN }
+| ')' { return RPAREN }
+| id { return IDENTIFIER }
+| eof { raise('Fin de buffer') }

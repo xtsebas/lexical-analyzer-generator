@@ -1,1 +1,37 @@
-# Ejemplo de un YALex complejo
+(* complex.yal - Analizador léxico de complejidad alta *)
+(* Este archivo maneja identificadores, palabras clave, operadores, números, comentarios y cadenas *)
+{
+import myToken
+}
+
+let digit = ['0'-'9']
+let letter = ['a'-'z' 'A'-'Z']
+let id = letter (letter | digit)*
+let number = digit+
+let string = '"' (letter | digit | ' ' | ['!'-'/'])* '"'
+let float = digit+ '.' digit+
+let comment = '(*' (_ # '*)')* '*)'
+
+rule gettoken =
+  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
+| '\n' { return EOL }
+| number { return int(lxm) }
+| float { return FLOAT }
+| string { return STRING }
+| comment { return lexbuf } (* Ignorar comentarios *)
+| '+' { return PLUS }
+| '-' { return MINUS }
+| '*' { return TIMES }
+| '/' { return DIV }
+| '(' { return LPAREN }
+| ')' { return RPAREN }
+| id { return IDENTIFIER }
+| '=' { return ASSIGN }
+| ';' { return SEMICOLON }
+| '<' { return LT }
+| '>' { return GT }
+| '<=' { return LE }
+| '>=' { return GE }
+| '==' { return EQ }
+| '!=' { return NE }
+| eof { raise('Fin de buffer') }

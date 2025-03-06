@@ -1,0 +1,103 @@
+{
+    "filename": "examples/complex.yal",
+    "header": "",
+    "definitions": {
+        "digit": "['0'-'9']",
+        "letter": "['a'-'z' 'A'-'Z']",
+        "id": "letter (letter | digit)*",
+        "number": "digit+",
+        "string": "'\"' (letter | digit | ' ' | ['!'-'/'])* '\"'",
+        "float": "digit+ '.' digit+",
+        "comment": "'(*' (_ # '*)')* '*)'"
+    },
+    "rules": [
+        [
+            "[' ' '\\t']",
+            "return lexbuf"
+        ],
+        [
+            "| '\\n'",
+            "return EOL"
+        ],
+        [
+            "| number",
+            "return int(lxm)"
+        ],
+        [
+            "| float",
+            "return FLOAT"
+        ],
+        [
+            "| string",
+            "return STRING"
+        ],
+        [
+            "| comment",
+            "return lexbuf"
+        ],
+        [
+            "| '+'",
+            "return PLUS"
+        ],
+        [
+            "| '-'",
+            "return MINUS"
+        ],
+        [
+            "| '*'",
+            "return TIMES"
+        ],
+        [
+            "| '/'",
+            "return DIV"
+        ],
+        [
+            "| '('",
+            "return LPAREN"
+        ],
+        [
+            "| ')'",
+            "return RPAREN"
+        ],
+        [
+            "| id",
+            "return IDENTIFIER"
+        ],
+        [
+            "| '='",
+            "return ASSIGN"
+        ],
+        [
+            "| ';'",
+            "return SEMICOLON"
+        ],
+        [
+            "| '<'",
+            "return LT"
+        ],
+        [
+            "| '>'",
+            "return GT"
+        ],
+        [
+            "| '<='",
+            "return LE"
+        ],
+        [
+            "| '>='",
+            "return GE"
+        ],
+        [
+            "| '=='",
+            "return EQ"
+        ],
+        [
+            "| '!='",
+            "return NE"
+        ],
+        [
+            "| eof",
+            "raise('Fin de buffer')"
+        ]
+    ]
+}

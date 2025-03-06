@@ -1,1 +1,27 @@
-# Ejemplo de un YALex de complejidad media
+(* medium.yal - Analizador léxico de complejidad media *)
+(* Este archivo reconoce palabras clave, identificadores, números y operadores *)
+{
+import myToken
+}
+
+let digit = ['0'-'9']
+let letter = ['a'-'z' 'A'-'Z']
+let id = letter (letter | digit)*
+let number = digit+
+let string = '"' (letter | digit | ' ' | ['!'-'/'])* '"'
+
+rule gettoken =
+  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
+  | '\n' { return EOL }
+  | number { return int(lxm) }
+  | string { return STRING }
+  | '+' { return PLUS }
+  | '-' { return MINUS }
+  | '*' { return TIMES }
+  | '/' { return DIV }
+  | '(' { return LPAREN }
+  | ')' { return RPAREN }
+  | id { return IDENTIFIER }
+  | '=' { return ASSIGN }
+  | ';' { return SEMICOLON }
+  | eof { raise('Fin de buffer') }

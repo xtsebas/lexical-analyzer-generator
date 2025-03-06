@@ -1,0 +1,56 @@
+{
+    "filename": "examples/simple.yal",
+    "header": "",
+    "definitions": {
+        "digit": "['0'-'9']",
+        "letter": "['a'-'z' 'A'-'Z']",
+        "id": "letter (letter | digit)*",
+        "number": "digit+"
+    },
+    "rules": [
+        [
+            "[' ' '\\t']",
+            "return lexbuf"
+        ],
+        [
+            "| '\\n'",
+            "return EOL"
+        ],
+        [
+            "| number",
+            "return int(lxm)"
+        ],
+        [
+            "| '+'",
+            "return PLUS"
+        ],
+        [
+            "| '-'",
+            "return MINUS"
+        ],
+        [
+            "| '*'",
+            "return TIMES"
+        ],
+        [
+            "| '/'",
+            "return DIV"
+        ],
+        [
+            "| '('",
+            "return LPAREN"
+        ],
+        [
+            "| ')'",
+            "return RPAREN"
+        ],
+        [
+            "| id",
+            "return IDENTIFIER"
+        ],
+        [
+            "| eof",
+            "raise('Fin de buffer')"
+        ]
+    ]
+}
