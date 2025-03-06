@@ -1,15 +1,50 @@
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import re
 import json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.lexer_template import LEXER_TEMPLATE
 
-# Genera el analizador léxico en base a un archivo .yal
-# Input: ruta del archivo .yal
-# Output: archivo Python con el analizador léxico generado
-def generate_lexer(yal_file):
- pass
+def generate_python_code(yalexParser):
+    """Genera código Python usando la plantilla"""
+    
+    token_definitions = ",\n".join(f'        "{key}": r"{value}"' for key, value in yalexParser.definitions.items())
+    token_rules = ",\n".join(f'        (r"{pattern}", "{action}")' for pattern, action in yalexParser.rules)
 
+    return LEXER_TEMPLATE.format(
+        token_definitions=token_definitions,
+        token_rules=token_rules
+    )
+
+def generate_python_lexer(yalexParser, output_dir="generated_lexers/"):
+    """Genera código Python basado en el archivo YALex"""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_filename = os.path.join(output_dir, os.path.basename(yalexParser.filename).replace(".yal", "_lexer.py"))
+    
+    python_code = generate_python_code(yalexParser)
+
+    with open(output_filename, "w", encoding="utf-8") as py_file:
+        py_file.write(python_code)
+
+    print(f"Lexer generado: {output_filename}")
+
+
+# Procesar archivos .yal con YAlexParser
+# Input: input_dir, output_dir
+# Output: 
+def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="generated_lexers/"):
+    """Procesa todos los archivos .yal en input_dir y guarda los resultados en output_dir"""
+    for filename in os.listdir(input_dir):
+        if filename.endswith(".yal"):
+            parser = YALexParser(os.path.join(input_dir, filename))
+            parser.parse()
+            parser.save_to_json(output_dir)
+            generate_python_lexer(parser, output_dir_py)
+
+
+#Clase para generar un parsing del .Yal
 class YALexParser:
     def __init__(self, filename):
         self.filename = filename
@@ -83,15 +118,3 @@ class YALexParser:
             json.dump(data, json_file, indent=4, ensure_ascii=False)
 
         print(f"Guardado: {output_filename}")
-
-
-# Procesar archivos .yal con YAlexParser
-# Input: input_dir, output_dir
-# Output: 
-def process_yalex_files(input_dir="examples/", output_dir="data/"):
-    """Procesa todos los archivos .yal en input_dir y guarda los resultados en output_dir"""
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".yal"):
-            parser = YALexParser(os.path.join(input_dir, filename))
-            parser.parse()
-            parser.save_to_json(output_dir)

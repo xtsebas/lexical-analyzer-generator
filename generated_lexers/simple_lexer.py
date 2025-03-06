@@ -1,15 +1,27 @@
-# Plantilla base para el analizador léxico generado
-LEXER_TEMPLATE = """import re
+import re
 
 class Lexer:
     def __init__(self, input_text):
         self.input_text = input_text
         self.tokens = []
-        self.token_definitions = {{
-            {token_definitions}
-        }}
+        self.token_definitions = {
+                    "digit": r"['0'-'9']",
+        "letter": r"['a'-'z' 'A'-'Z']",
+        "id": r"letter (letter | digit)*",
+        "number": r"digit+"
+        }
         self.token_rules = [
-            {token_rules}
+                    (r"[' ' '\t']", "return lexbuf"),
+        (r"| '\n'", "return EOL"),
+        (r"| number", "return int(lxm)"),
+        (r"| '+'", "return PLUS"),
+        (r"| '-'", "return MINUS"),
+        (r"| '*'", "return TIMES"),
+        (r"| '/'", "return DIV"),
+        (r"| '('", "return LPAREN"),
+        (r"| ')'", "return RPAREN"),
+        (r"| id", "return IDENTIFIER"),
+        (r"| eof", "raise('Fin de buffer')")
         ]
 
     def tokenize(self):
@@ -25,7 +37,7 @@ class Lexer:
                     pos += len(lexeme)
                     break
             if not match:
-                raise ValueError(f"Error léxico en posición {{pos}}: {{self.input_text[pos]}}")
+                raise ValueError(f"Error léxico en posición {pos}: {self.input_text[pos]}")
         return self.tokens
 
 if __name__ == "__main__":
@@ -33,4 +45,3 @@ if __name__ == "__main__":
     lexer = Lexer(text)
     tokens = lexer.tokenize()
     print("Tokens encontrados:", tokens)
-"""
