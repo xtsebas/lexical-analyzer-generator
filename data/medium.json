@@ -6,7 +6,7 @@
         "letter": "['a'-'z' 'A'-'Z']",
         "id": "letter (letter | digit)*",
         "number": "digit+",
-        "string": "'\"' (letter | digit | ' ' | ['!'-'/'])* '\"'"
+        "string": "'\"' (letter | digit | ' ' | [!-/])* '\"'"
     },
     "rules": [
         [

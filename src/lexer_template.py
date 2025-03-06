@@ -6,10 +6,10 @@ class Lexer:
         self.input_text = input_text
         self.tokens = []
         self.token_definitions = {{
-            {token_definitions}
+{token_definitions}
         }}
         self.token_rules = [
-            {token_rules}
+{token_rules}
         ]
 
     def tokenize(self):

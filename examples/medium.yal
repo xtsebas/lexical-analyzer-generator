@@ -8,7 +8,7 @@ let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter (letter | digit)*
 let number = digit+
-let string = '"' (letter | digit | ' ' | ['!'-'/'])* '"'
+let string = '"' (letter | digit | ' ' | [!-/])* '"'
 
 rule gettoken =
   [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)

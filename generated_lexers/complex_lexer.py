@@ -5,16 +5,16 @@ class Lexer:
         self.input_text = input_text
         self.tokens = []
         self.token_definitions = {
-                    "digit": r"['0'-'9']",
+        "digit": r"['0'-'9']",
         "letter": r"['a'-'z' 'A'-'Z']",
         "id": r"letter (letter | digit)*",
         "number": r"digit+",
-        "string": r"'"' (letter | digit | ' ' | ['!'-'/'])* '"'",
+        "string": r"'"' (letter | digit | ' ' | [!-/])* '"'",
         "float": r"digit+ '.' digit+",
         "comment": r"'(*' (_ # '*)')* '*)'"
         }
         self.token_rules = [
-                    (r"[' ' '\t']", "return lexbuf"),
+        (r"[' ' '\t']", "return lexbuf"),
         (r"| '\n'", "return EOL"),
         (r"| number", "return int(lxm)"),
         (r"| float", "return FLOAT"),
