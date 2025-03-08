@@ -4,6 +4,7 @@ class Lexer:
     def __init__(self, input_text):
         self.input_text = input_text
         self.tokens = []
+        self.errors = []
         self.token_definitions = {
         "digit": r"['0'-'9']",
         "letter": r"['a'-'z' 'A'-'Z']",
@@ -44,13 +45,26 @@ class Lexer:
             if not match:
                 raise ValueError(f"Error léxico en posición {pos}: {self.input_text[pos]}")
         return self.tokens, self.errors
+    
+    def print_tokens(self):
+        if self.tokens:
+            print("Tokens encontrados:")
+            for token_name, lexeme in self.tokens:
+                print(f"  - {token_name}: '{lexeme}'")
+        else:
+            print("No se identificaron tokens.")
+    
+    def print_errors(self):
+        if self.errors:
+            print("Errores léxicos detectados:")
+            for pos, lexeme in self.errors:
+                print(f"  - Error en posición {pos}: '{lexeme}'")
+        else:
+            print("No se detectaron errores léxicos.")
 
 if __name__ == "__main__":
     text = input("Ingrese el código a analizar: ")
     lexer = Lexer(text)
-    tokens, errors = lexer.tokenize()
-    print("Tokens encontrados:", tokens)
-    if errors:
-        print("Errores léxicos detectados:")
-        for error in errors:
-            print(error)
+    tokens, errors = lexer.lex_analyze()
+    lexer.print_tokens()
+    lexer.print_errors()

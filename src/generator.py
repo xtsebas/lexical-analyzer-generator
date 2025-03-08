@@ -5,6 +5,20 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.lexer_template import LEXER_TEMPLATE
 
+# Procesar archivos .yal con YAlexParser
+# Input: input_dir, output_dir
+# Output: 
+def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="output/"):
+    """Procesa todos los archivos .yal en input_dir y guarda los resultados en output_dir"""
+    for filename in os.listdir(input_dir):
+        if filename.endswith(".yal"):
+            parser = YALexParser(os.path.join(input_dir, filename))
+            parser.parse()
+            parser.save_to_json(output_dir)
+            generate_python_lexer(parser, output_dir_py)
+
+
+#FUNCIONES Y CLASES PRIVADAS DEL MODULO
 def generate_python_code(yalexParser):
     """Genera código Python usando la plantilla"""
     
@@ -30,19 +44,6 @@ def generate_python_lexer(yalexParser, output_dir="output/"):
         py_file.write(python_code)
 
     print(f"Lexer generado: {output_filename}")
-
-
-# Procesar archivos .yal con YAlexParser
-# Input: input_dir, output_dir
-# Output: 
-def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="output/"):
-    """Procesa todos los archivos .yal en input_dir y guarda los resultados en output_dir"""
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".yal"):
-            parser = YALexParser(os.path.join(input_dir, filename))
-            parser.parse()
-            parser.save_to_json(output_dir)
-            generate_python_lexer(parser, output_dir_py)
 
 
 #Clase para generar un parsing del .Yal
