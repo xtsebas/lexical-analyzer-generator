@@ -10,6 +10,7 @@ def generate_python_code(yalexParser):
     
     token_definitions = ",\n".join(f'        "{key}": r"{value}"' for key, value in yalexParser.definitions.items())
     token_rules = ",\n".join(f'        (r"{pattern}", "{action}")' for pattern, action in yalexParser.rules)
+    token_rules += ',\n        (r".", "ERROR")'
 
     return LEXER_TEMPLATE.format(
         token_definitions=token_definitions,
@@ -111,7 +112,8 @@ class YALexParser:
             "filename": self.filename,
             "header": self.header,
             "definitions": self.definitions,
-            "rules": self.rules
+            "rules": self.rules,
+            "errors": []
         }
 
         with open(output_filename, "w", encoding="utf-8") as json_file:

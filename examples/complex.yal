@@ -35,3 +35,4 @@ rule gettoken =
 | '==' { return EQ }
 | '!=' { return NE }
 | eof { raise('Fin de buffer') }
+| . { raise('Error léxico: Caracter no reconocido'  + lxm) }
