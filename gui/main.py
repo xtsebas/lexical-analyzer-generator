@@ -9,6 +9,7 @@ from src.generator import generate_lexer
 def run_generator_from_gui():
     print("Parseando archivos .yal a Json ...")
     generate_lexer()
+    print("\nGenerados los analizadores lexicos")
 
 if __name__ == "__main__":
     run_generator_from_gui()

@@ -66,9 +66,8 @@ class Lexer:
         else:
             print("No se detectaron errores léxicos.")
 
-if __name__ == "__main__":
-    text = input("Ingrese el código a analizar: ")
+def lexical_analyzer(text):
     lexer = Lexer(text)
-    tokens, errors = lexer.lex_analyze()
+    lexer.lex_analyze()
     lexer.print_tokens()
     lexer.print_errors()
