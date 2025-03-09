@@ -165,8 +165,8 @@ class Tree:
         print("\n====== Construcción del Árbol Sintáctico ======\n")
 
         for caracter in self.expresion_postfija:
-            print(f"🔹 Procesando: {caracter}")
-            print(f"  📍 Pila antes de procesar: {[n.valor for n in pila.items]}")
+            print(f"Procesando: {caracter}")
+            print(f"  Pila antes de procesar: {[n.valor for n in pila.items]}")
 
             # ✅ Tratar '#' como un operando, igual que 'a', 'b', 'E', etc.
             if caracter.isalnum() or caracter in {'E', '#'}:  # Si es un operando (letra, 'E' para ε, '#' como marcador)
@@ -175,7 +175,7 @@ class Tree:
                 pila.push(nodo)
                 if caracter != 'E':  # Solo incrementar la posición si NO es epsilon
                     posicion += 1
-                print(f"  ✅ Se agregó nodo hoja: {nodo.valor} (Pos: {nodo.posicion})")
+                print(f"  Se agregó nodo hoja: {nodo.valor} (Pos: {nodo.posicion})")
 
             elif caracter in {'|', '.', '*'}:  # Si es un operador
                 if caracter == '*':  # Operador unario (Cerradura de Kleene)
@@ -183,7 +183,7 @@ class Tree:
                         raise ValueError("Expresión postfija mal formada: falta operando para '*'")
                     hijo = pila.pop()
                     nodo = Nodo(valor=caracter, izquierdo=hijo)
-                    print(f"  🔄 Se creó nodo * con hijo {hijo.valor}")
+                    print(f"  Se creó nodo * con hijo {hijo.valor}")
 
                 else:  # Operador binario ('|' o '.')
                     if pila.is_empty():
@@ -193,11 +193,11 @@ class Tree:
                         raise ValueError(f"Expresión postfija mal formada: falta operandos para '{caracter}'")
                     izquierdo = pila.pop()
                     nodo = Nodo(valor=caracter, izquierdo=izquierdo, derecho=derecho)
-                    print(f"  🔄 Se creó nodo {caracter} con hijos {izquierdo.valor}, {derecho.valor}")
+                    print(f"  Se creó nodo {caracter} con hijos {izquierdo.valor}, {derecho.valor}")
 
                 pila.push(nodo)
 
-            print(f"  📍 Pila después de procesar: {[n.valor for n in pila.items]}")
+            print(f"  Pila después de procesar: {[n.valor for n in pila.items]}")
             print("-" * 50)
 
         if pila.is_empty() or len(pila.items) != 1:
