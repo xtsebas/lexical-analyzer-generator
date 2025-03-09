@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from model.afd import AFD
+from regex_afd.src.model.afd import AFD
 
 def evaluar_cadena(afd: AFD, cadena : str) -> bool:
     """

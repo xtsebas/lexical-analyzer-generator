@@ -21,15 +21,48 @@ def generate_lexer(input_dir="examples/", output_dir="data/", output_dir_py="out
 #FUNCIONES Y CLASES PRIVADAS DEL MODULO
 def generate_python_code(yalexParser):
     """Genera código Python usando la plantilla"""
-    
+
+    # Reemplazar referencias a otras reglas en self.token_definitions
+    for key, value in yalexParser.definitions.items():
+        for sub_key, sub_value in yalexParser.definitions.items():
+            value = value.replace(sub_key, f"({sub_value})")  # Expande referencias
+        yalexParser.definitions[key] = value
+
+    # Corrección en la generación de expresiones regulares
     token_definitions = ",\n".join(f'        "{key}": r"{value}"' for key, value in yalexParser.definitions.items())
-    token_rules = ",\n".join(f'        (r"{pattern}", "{action}")' for pattern, action in yalexParser.rules)
-    token_rules += ',\n        (r".", "ERROR")'
+
+    # Manejo de token rules evitando errores de formato
+    token_rules = []
+    for pattern, action in yalexParser.rules:
+        pattern = pattern.strip().replace("'", "")  # Eliminar comillas innecesarias
+        pattern = pattern.replace("*", r"\*").replace("+", r"\+").replace("?", r"\?")
+        pattern = pattern.replace("(", r"\(").replace(")", r"\)").replace("|", r"\|")
+        pattern = pattern.replace("//", r"//").replace("**", r"\*\*")  # Escapar correctamente
+
+        # Corregir expresión regular de comentarios
+        if pattern.startswith("#"):
+            pattern = r"#.*"
+
+        # Reemplazar variables de token por sus expresiones reales
+        for key, value in yalexParser.definitions.items():
+            pattern = pattern.replace(key, value)
+
+        token_rules.append(f'        (r"{pattern}", "{action}")')
+
+    # Asegurar que las palabras clave son evaluadas antes que los identificadores
+    token_rules.insert(0, '        (r"\\b(print|return|None|True|False)\\b", "return KEYWORD")')
+
+    # Agregar regla para `=`
+    token_rules.append('        (r"=", "return ASSIGN")')
+
+    # Manejo de errores
+    token_rules.append('        (r".", "raise(\'Error lexico: Caracter no reconocido \' + lxm)")')
 
     return LEXER_TEMPLATE.format(
         token_definitions=token_definitions,
-        token_rules=token_rules
+        token_rules=",\n".join(token_rules)
     )
+
 
 def generate_python_lexer(yalexParser, output_dir="output/"):
     """Genera código Python basado en el archivo YALex"""

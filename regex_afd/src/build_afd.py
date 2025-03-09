@@ -1,6 +1,6 @@
 from typing import Set, Dict, Tuple, Any
-from model.afd import AFD
-from model.tree import Tree
+from regex_afd.src.model.afd import AFD
+from regex_afd.src.model.tree import Tree
 
 def construir_afd(arbol: Tree) -> AFD:
     """

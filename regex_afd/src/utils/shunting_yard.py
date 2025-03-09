@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from model.stack import Stack
+from regex_afd.src.model.stack import Stack
 
 #referencia  a https://github.com/xtsebas/regex_to_AFD/blob/main/Controller/postfix.py
 

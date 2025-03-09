@@ -1,6 +1,6 @@
 from collections import defaultdict
 from typing import Set, Dict, Tuple
-from model.afd import AFD 
+from regex_afd.src.model.afd import AFD 
 
 def minAFD(afd: AFD) -> AFD:
     """

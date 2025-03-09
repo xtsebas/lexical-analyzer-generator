@@ -10,53 +10,55 @@ class Lexer:
         self.token_definitions = {
         "digit": r"[0-9]",
         "letter": r"[a-zA-Z_]",
-        "id": r"letter (letter | digit)*",
-        "number": r"digit+",
-        "float": r"digit+ '.' digit+",
+        "id": r"([a-zA-Z_]) (([a-zA-Z_]) | ([0-9]))*",
+        "number": r"([0-9])+",
+        "float": r"([0-9])+ '.' ([0-9])+",
         "string": r"'"' (_ # '"')* '"' | "'" (_ # "'")* "'"",
         "triple_string": r"'"""' (_ # '"""')* '"""' | "'''" (_ # "'''")* "'''"",
         "comment": r"'#' (_ # '\n')*",
         "keyword": r"'if' | 'else' | 'elif' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' |"
         }
         self.token_rules = [
-        (r"[' ' '\t']", "return None"),
-        (r"'\n'", "return EOL"),
-        (r"comment", "return None"),
-        (r"keyword", "return KEYWORD"),
-        (r"number", "return INT"),
-        (r"float", "return FLOAT"),
-        (r"string", "return STRING"),
-        (r"triple_string", "return STRING"),
-        (r"'+'", "return PLUS"),
-        (r"'-'", "return MINUS"),
-        (r"'*'", "return TIMES"),
-        (r"'**'", "return POWER"),
-        (r"'/'", "return DIV"),
-        (r"'//'", "return FLOOR_DIV"),
-        (r"'%'", "return MOD"),
-        (r"'='", "return ASSIGN"),
-        (r"'=='", "return EQ"),
-        (r"'!='", "return NE"),
-        (r"'<'", "return LT"),
-        (r"'>'", "return GT"),
-        (r"'<='", "return LE"),
-        (r"'>='", "return GE"),
-        (r"'('", "return LPAREN"),
-        (r"')'", "return RPAREN"),
-        (r"'['", "return LBRACKET"),
-        (r"']'", "return RBRACKET"),
-        (r"'{'", "return LBRACE"),
-        (r"'}'", "return RBRACE"),
-        (r"':'", "return COLON"),
-        (r"','", "return COMMA"),
-        (r"'.'", "return DOT"),
-        (r"'and'", "return AND"),
-        (r"'or'", "return OR"),
-        (r"'not'", "return NOT"),
-        (r"id", "return IDENTIFIER"),
+        (r"\b(print|return|None|True|False)\b", "return KEYWORD"),
+        (r"[  \t]", "return None"),
+        (r"\n", "return EOL"),
+        (r"'#' (_ # '\n')*", "return None"),
+        (r"'if' | 'else' | 'elif' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' |", "return KEYWORD"),
+        (r"([0-9])+", "return INT"),
+        (r"([0-9])+ '.' ([0-9])+", "return FLOAT"),
+        (r"'"' (_ # '"')* '"' | "'" (_ # "'")* "'"", "return STRING"),
+        (r"triple_'"' (_ # '"')* '"' | "'" (_ # "'")* "'"", "return STRING"),
+        (r"\+", "return PLUS"),
+        (r"-", "return MINUS"),
+        (r"\*", "return TIMES"),
+        (r"\*\*", "return POWER"),
+        (r"/", "return DIV"),
+        (r"//", "return FLOOR_DIV"),
+        (r"%", "return MOD"),
+        (r"=", "return ASSIGN"),
+        (r"==", "return EQ"),
+        (r"!=", "return NE"),
+        (r"<", "return LT"),
+        (r">", "return GT"),
+        (r"<=", "return LE"),
+        (r">=", "return GE"),
+        (r"\(", "return LPAREN"),
+        (r"\)", "return RPAREN"),
+        (r"[", "return LBRACKET"),
+        (r"]", "return RBRACKET"),
+        (r"{", "return LBRACE"),
+        (r"}", "return RBRACE"),
+        (r":", "return COLON"),
+        (r",", "return COMMA"),
+        (r".", "return DOT"),
+        (r"and", "return AND"),
+        (r"or", "return OR"),
+        (r"not", "return NOT"),
+        (r"([a-zA-Z_]) (([a-zA-Z_]) | ([0-9]))*", "return IDENTIFIER"),
         (r"eof", "raise('Fin de buffer')"),
-        (r".", "raise('Error léxico: Caracter no reconocido' + lxm)"),
-        (r".", "ERROR")
+        (r".", "raise('Error lexico: Caracter no reconocido' + lxm)"),
+        (r"=", "return ASSIGN"),
+        (r".", "raise('Error lexico: Caracter no reconocido ' + lxm)")
         ]
 
     def lex_analyze(self):
@@ -71,13 +73,13 @@ class Lexer:
                     if token_name is None:
                         pass  # Ignorar espacios o comentarios
                     elif token_name == "ERROR":
-                        self.errors.append(f"Error léxico en posición {pos}: {lexeme}")
+                        self.errors.append(f"Error lexico en posicion {pos}: {lexeme}")
                     else:
                         self.tokens.append((token_name, lexeme))
                     pos += len(lexeme)
                     break
             if not match:
-                raise ValueError(f"Error léxico en posición {pos}: {self.input_text[pos]}")
+                raise ValueError(f"Error lexico en posicion {pos}: {self.input_text[pos]}")
         return self.tokens, self.errors
     
     def print_tokens(self):
@@ -90,11 +92,11 @@ class Lexer:
     
     def print_errors(self):
         if self.errors:
-            print("Errores léxicos detectados:")
+            print("Errores lexicos detectados:")
             for pos, lexeme in self.errors:
-                print(f"  - Error en posición {pos}: '{lexeme}'")
+                print(f"  - Error en posicion {pos}: '{lexeme}'")
         else:
-            print("No se detectaron errores léxicos.")
+            print("No se detectaron errores lexicos.")
     
     def verify_lexeme(self, lexeme):
         for token_name, regex in self.token_definitions.items():

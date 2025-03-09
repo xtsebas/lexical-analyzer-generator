@@ -1,4 +1,4 @@
-# Archivo de entrada con complejidad media# Esto es un comentario
+# Archivo de entrada con complejidad media
 def cuadrado(x):
     return x ** 2
 

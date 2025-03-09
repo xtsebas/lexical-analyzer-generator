@@ -1,8 +1,8 @@
 # src/syntax_tree.py
 from typing import Optional, Set
-from src.model.nodo import Nodo
-from src.utils.shunting_yard import shunting_yard
-from model.tree import Tree
+from regex_afd.src.model.nodo import Nodo
+from regex_afd.src.utils.shunting_yard import shunting_yard
+from regex_afd.src.model.tree import Tree
 
 def convertir_a_posfijo(regex: str) -> str:
     """

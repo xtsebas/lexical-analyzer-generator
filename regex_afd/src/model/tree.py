@@ -1,11 +1,11 @@
 from typing import Optional, Set
 
-from src.model.nodo import Nodo
-from src.model.stack import Stack
+from regex_afd.src.model.nodo import Nodo
+from regex_afd.src.model.stack import Stack
 
 from typing import Optional
-from src.model.nodo import Nodo
-from src.model.stack import Stack
+from regex_afd.src.model.nodo import Nodo
+from regex_afd.src.model.stack import Stack
 
 class Tree:
     """

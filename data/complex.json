@@ -159,7 +159,7 @@
         ],
         [
             ".",
-            "raise('Error léxico: Caracter no reconocido' + lxm)"
+            "raise('Error lexico: Caracter no reconocido' + lxm)"
         ]
     ],
     "errors": []

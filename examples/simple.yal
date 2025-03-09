@@ -28,4 +28,4 @@ rule gettoken =
 | ')' { return RPAREN }
 | id { return IDENTIFIER }
 | eof { raise('Fin de buffer') }
-| . { raise('Error léxico: Caracter no reconocido' + lxm) }
+| . { raise('Error lexico: Caracter no reconocido' + lxm) }
