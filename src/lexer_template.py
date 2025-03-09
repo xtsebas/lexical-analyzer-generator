@@ -1,5 +1,6 @@
 # Plantilla base para el analizador léxico generado
-LEXER_TEMPLATE = """import re
+LEXER_TEMPLATE = """
+import re
 
 class Lexer:
     def __init__(self, input_text):

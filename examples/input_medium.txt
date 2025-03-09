@@ -1,1 +1,8 @@
-# Archivo de entrada con complejidad media
+# Archivo de entrada con complejidad media# Esto es un comentario
+def cuadrado(x):
+    return x ** 2
+
+if cuadrado(4) > 10:
+    print("Mayor que 10")
+else:
+    print("Menor o igual a 10")

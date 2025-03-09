@@ -1,38 +1,60 @@
-(* complex.yal - Analizador léxico de complejidad alta *)
-(* Este archivo maneja identificadores, palabras clave, operadores, números, comentarios y cadenas *)
+(* complex_python.yal - Analizador léxico para Python *)
 {
 import myToken
 }
 
+(* Definición de tokens *)
 let digit = ['0'-'9']
-let letter = ['a'-'z' 'A'-'Z']
+let letter = ['a'-'z' 'A'-'Z' '_']
 let id = letter (letter | digit)*
 let number = digit+
-let string = '"' (letter | digit | ' ' | [!-/])* '"'
 let float = digit+ '.' digit+
-let comment = '(*' (_ # '*)')* '*)'
+let string = '"' (_ # '"')* '"' | "'" (_ # "'")* "'"
+let triple_string = '"""' (_ # '"""')* '"""' | "'''" (_ # "'''")* "'''"
+let comment = '#' (_ # '\n')*
 
+(* Palabras clave en Python *)
+let keyword = 'if' | 'else' | 'elif' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' | 
+              'as' | 'class' | 'self' | 'None' | 'True' | 'False' | 'and' | 'or' | 'not' |
+              'try' | 'except' | 'finally' | 'with' | 'yield' | 'lambda' | 'global' | 'assert' | 'del' |
+              'raise' | 'break' | 'continue' | 'pass'
+
+(* Operadores y símbolos de Python *)
 rule gettoken =
-  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
-| '\n' { return EOL }
-| number { return int(lxm) }
+  [' ' '\t'] { return lexbuf }  (* Ignorar espacios en blanco *)
+| '\n' { return EOL }           (* Saltos de línea *)
+| comment { return lexbuf }      (* Ignorar comentarios *)
+| keyword { return KEYWORD }
+| number { return INT }
 | float { return FLOAT }
 | string { return STRING }
-| comment { return lexbuf } (* Ignorar comentarios *)
+| triple_string { return STRING }
 | '+' { return PLUS }
 | '-' { return MINUS }
 | '*' { return TIMES }
+| '**' { return POWER }
 | '/' { return DIV }
-| '(' { return LPAREN }
-| ')' { return RPAREN }
-| id { return IDENTIFIER }
+| '//' { return FLOOR_DIV }
+| '%' { return MOD }
 | '=' { return ASSIGN }
-| ';' { return SEMICOLON }
+| '==' { return EQ }
+| '!=' { return NE }
 | '<' { return LT }
 | '>' { return GT }
 | '<=' { return LE }
 | '>=' { return GE }
-| '==' { return EQ }
-| '!=' { return NE }
+| '(' { return LPAREN }
+| ')' { return RPAREN }
+| '[' { return LBRACKET }
+| ']' { return RBRACKET }
+| '{' { return LBRACE }
+| '}' { return RBRACE }
+| ':' { return COLON }
+| ',' { return COMMA }
+| '.' { return DOT }
+| 'and' { return AND }
+| 'or' { return OR }
+| 'not' { return NOT }
+| id { return IDENTIFIER }
 | eof { raise('Fin de buffer') }
-| . { raise('Error léxico: Caracter no reconocido'  + lxm) }
+| . { raise('Error léxico: Caracter no reconocido' + lxm) }

@@ -3,9 +3,10 @@
     "header": "",
     "definitions": {
         "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z']",
+        "letter": "['a'-'z' 'A'-'Z' '_']",
         "id": "letter (letter | digit)*",
-        "number": "digit+"
+        "number": "digit+",
+        "keyword": "'print' | 'return' | 'None' | 'True' | 'False'"
     },
     "rules": [
         [
@@ -17,8 +18,16 @@
             "return EOL"
         ],
         [
+            "| '#' (_ # '\\n')*",
+            "return lexbuf"
+        ],
+        [
+            "| keyword",
+            "return KEYWORD"
+        ],
+        [
             "| number",
-            "return int(lxm)"
+            "return INT"
         ],
         [
             "| '+'",
@@ -33,8 +42,16 @@
             "return TIMES"
         ],
         [
+            "| '**'",
+            "return POWER"
+        ],
+        [
             "| '/'",
             "return DIV"
+        ],
+        [
+            "| '//'",
+            "return FLOOR_DIV"
         ],
         [
             "| '('",
@@ -54,7 +71,7 @@
         ],
         [
             "| .",
-            "raise('Error léxico: Caracter no reconocido'  + lxm)"
+            "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],
     "errors": []

@@ -3,10 +3,12 @@
     "header": "",
     "definitions": {
         "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z']",
+        "letter": "['a'-'z' 'A'-'Z' '_']",
         "id": "letter (letter | digit)*",
         "number": "digit+",
-        "string": "'\"' (letter | digit | ' ' | [!-/])* '\"'"
+        "string": "'\"' (_ # '\"')* '\"' | \"'\" (_ # \"'\")* \"'\"",
+        "comment": "'#' (_ # '\\n')*",
+        "keyword": "'if' | 'else' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' | 'as' |"
     },
     "rules": [
         [
@@ -18,8 +20,16 @@
             "return EOL"
         ],
         [
+            "| comment",
+            "return lexbuf"
+        ],
+        [
+            "| keyword",
+            "return KEYWORD"
+        ],
+        [
             "| number",
-            "return int(lxm)"
+            "return INT"
         ],
         [
             "| string",
@@ -38,8 +48,20 @@
             "return TIMES"
         ],
         [
+            "| '**'",
+            "return POWER"
+        ],
+        [
             "| '/'",
             "return DIV"
+        ],
+        [
+            "| '//'",
+            "return FLOOR_DIV"
+        ],
+        [
+            "| '='",
+            "return ASSIGN"
         ],
         [
             "| '('",
@@ -54,20 +76,12 @@
             "return IDENTIFIER"
         ],
         [
-            "| '='",
-            "return ASSIGN"
-        ],
-        [
-            "| ';'",
-            "return SEMICOLON"
-        ],
-        [
             "| eof",
             "raise('Fin de buffer')"
         ],
         [
             "| .",
-            "raise('Error léxico: Caracter no reconocido'  + lxm)"
+            "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],
     "errors": []

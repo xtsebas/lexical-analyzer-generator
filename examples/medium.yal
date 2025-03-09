@@ -1,28 +1,37 @@
-(* medium.yal - Analizador léxico de complejidad media *)
-(* Este archivo reconoce palabras clave, identificadores, números y operadores *)
+(* medium_python.yal - Analizador léxico para Python *)
 {
 import myToken
 }
 
+(* Definición de tokens *)
 let digit = ['0'-'9']
-let letter = ['a'-'z' 'A'-'Z']
+let letter = ['a'-'z' 'A'-'Z' '_']
 let id = letter (letter | digit)*
 let number = digit+
-let string = '"' (letter | digit | ' ' | [!-/])* '"'
+let string = '"' (_ # '"')* '"' | "'" (_ # "'")* "'"
+let comment = '#' (_ # '\n')*
 
+(* Palabras clave básicas de Python *)
+let keyword = 'if' | 'else' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' | 'as' |
+              'class' | 'None' | 'True' | 'False' | 'and' | 'or' | 'not'
+
+(* Operadores y símbolos de Python *)
 rule gettoken =
-  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
-  | '\n' { return EOL }
-  | number { return int(lxm) }
+  [' ' '\t'] { return lexbuf }  (* Ignorar espacios en blanco *)
+  | '\n' { return EOL }         (* Saltos de línea *)
+  | comment { return lexbuf }   (* Ignorar comentarios *)
+  | keyword { return KEYWORD }
+  | number { return INT }
   | string { return STRING }
   | '+' { return PLUS }
   | '-' { return MINUS }
   | '*' { return TIMES }
+  | '**' { return POWER }
   | '/' { return DIV }
+  | '//' { return FLOOR_DIV }
+  | '=' { return ASSIGN }
   | '(' { return LPAREN }
   | ')' { return RPAREN }
   | id { return IDENTIFIER }
-  | '=' { return ASSIGN }
-  | ';' { return SEMICOLON }
   | eof { raise('Fin de buffer') }
-  | . { raise('Error léxico: Caracter no reconocido'  + lxm) }
+  | . { raise('Error léxico: Caracter no reconocido' + lxm) }

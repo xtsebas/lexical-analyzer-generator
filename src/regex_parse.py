@@ -4,12 +4,20 @@ from regex_afd.src.parser import parsear_regex, aumentar_regex
 from regex_afd.src.syntax_tree import construir_arbol, calcular_anulable, calcular_primera_pos, calcular_ultima_pos, calcular_siguiente_pos
 from regex_afd.src.build_afd import construir_afd
 from regex_afd.src.simulation import evaluar_cadena
+from regex_afd.src.minimization import minAFD
 
 #Parsea expresiones regulares y las convierte en un AFD
 # Input: expresiones regulares del archivo .yal
 # Output: estructura de datos representando un AFD
-def parse_regex(yal_regex):
-    pass
+def parse_regex(cadena, regex):
+    afd = regex_to_automaton(regex=regex)
+    afd =  minAFD(afd)
+    aceptada = evaluar_cadena(afd, cadena)
+    if aceptada:
+        print(f"La cadena '{cadena}' es aceptada por el AFD.")
+    else:
+        print(f"La cadena '{cadena}' NO es aceptada por el AFD.")
+
 
 # Convierte una expresión regular en un autómata finito
 # Input: expresión regular

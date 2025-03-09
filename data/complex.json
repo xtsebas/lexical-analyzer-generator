@@ -3,12 +3,14 @@
     "header": "",
     "definitions": {
         "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z']",
+        "letter": "['a'-'z' 'A'-'Z' '_']",
         "id": "letter (letter | digit)*",
         "number": "digit+",
-        "string": "'\"' (letter | digit | ' ' | [!-/])* '\"'",
         "float": "digit+ '.' digit+",
-        "comment": "'(*' (_ # '*)')* '*)'"
+        "string": "'\"' (_ # '\"')* '\"' | \"'\" (_ # \"'\")* \"'\"",
+        "triple_string": "'\"\"\"' (_ # '\"\"\"')* '\"\"\"' | \"'''\" (_ # \"'''\")* \"'''\"",
+        "comment": "'#' (_ # '\\n')*",
+        "keyword": "'if' | 'else' | 'elif' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' |"
     },
     "rules": [
         [
@@ -20,8 +22,16 @@
             "return EOL"
         ],
         [
+            "| comment",
+            "return lexbuf"
+        ],
+        [
+            "| keyword",
+            "return KEYWORD"
+        ],
+        [
             "| number",
-            "return int(lxm)"
+            "return INT"
         ],
         [
             "| float",
@@ -32,8 +42,8 @@
             "return STRING"
         ],
         [
-            "| comment",
-            "return lexbuf"
+            "| triple_string",
+            "return STRING"
         ],
         [
             "| '+'",
@@ -48,28 +58,32 @@
             "return TIMES"
         ],
         [
+            "| '**'",
+            "return POWER"
+        ],
+        [
             "| '/'",
             "return DIV"
         ],
         [
-            "| '('",
-            "return LPAREN"
+            "| '//'",
+            "return FLOOR_DIV"
         ],
         [
-            "| ')'",
-            "return RPAREN"
-        ],
-        [
-            "| id",
-            "return IDENTIFIER"
+            "| '%'",
+            "return MOD"
         ],
         [
             "| '='",
             "return ASSIGN"
         ],
         [
-            "| ';'",
-            "return SEMICOLON"
+            "| '=='",
+            "return EQ"
+        ],
+        [
+            "| '!='",
+            "return NE"
         ],
         [
             "| '<'",
@@ -88,12 +102,56 @@
             "return GE"
         ],
         [
-            "| '=='",
-            "return EQ"
+            "| '('",
+            "return LPAREN"
         ],
         [
-            "| '!='",
-            "return NE"
+            "| ')'",
+            "return RPAREN"
+        ],
+        [
+            "| '['",
+            "return LBRACKET"
+        ],
+        [
+            "| ']'",
+            "return RBRACKET"
+        ],
+        [
+            "| '{'",
+            "return LBRACE"
+        ],
+        [
+            "| '}'",
+            "return RBRACE"
+        ],
+        [
+            "| ':'",
+            "return COLON"
+        ],
+        [
+            "| ','",
+            "return COMMA"
+        ],
+        [
+            "| '.'",
+            "return DOT"
+        ],
+        [
+            "| 'and'",
+            "return AND"
+        ],
+        [
+            "| 'or'",
+            "return OR"
+        ],
+        [
+            "| 'not'",
+            "return NOT"
+        ],
+        [
+            "| id",
+            "return IDENTIFIER"
         ],
         [
             "| eof",
@@ -101,7 +159,7 @@
         ],
         [
             "| .",
-            "raise('Error léxico: Caracter no reconocido'  + lxm)"
+            "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],
     "errors": []

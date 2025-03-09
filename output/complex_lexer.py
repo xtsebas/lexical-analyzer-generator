@@ -1,3 +1,4 @@
+
 import re
 
 class Lexer:
@@ -7,37 +8,53 @@ class Lexer:
         self.errors = []
         self.token_definitions = {
         "digit": r"['0'-'9']",
-        "letter": r"['a'-'z' 'A'-'Z']",
+        "letter": r"['a'-'z' 'A'-'Z' '_']",
         "id": r"letter (letter | digit)*",
         "number": r"digit+",
-        "string": r"'"' (letter | digit | ' ' | [!-/])* '"'",
         "float": r"digit+ '.' digit+",
-        "comment": r"'(*' (_ # '*)')* '*)'"
+        "string": r"'"' (_ # '"')* '"' | "'" (_ # "'")* "'"",
+        "triple_string": r"'"""' (_ # '"""')* '"""' | "'''" (_ # "'''")* "'''"",
+        "comment": r"'#' (_ # '\n')*",
+        "keyword": r"'if' | 'else' | 'elif' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' |"
         }
         self.token_rules = [
         (r"[' ' '\t']", "return lexbuf"),
         (r"| '\n'", "return EOL"),
-        (r"| number", "return int(lxm)"),
+        (r"| comment", "return lexbuf"),
+        (r"| keyword", "return KEYWORD"),
+        (r"| number", "return INT"),
         (r"| float", "return FLOAT"),
         (r"| string", "return STRING"),
-        (r"| comment", "return lexbuf"),
+        (r"| triple_string", "return STRING"),
         (r"| '+'", "return PLUS"),
         (r"| '-'", "return MINUS"),
         (r"| '*'", "return TIMES"),
+        (r"| '**'", "return POWER"),
         (r"| '/'", "return DIV"),
-        (r"| '('", "return LPAREN"),
-        (r"| ')'", "return RPAREN"),
-        (r"| id", "return IDENTIFIER"),
+        (r"| '//'", "return FLOOR_DIV"),
+        (r"| '%'", "return MOD"),
         (r"| '='", "return ASSIGN"),
-        (r"| ';'", "return SEMICOLON"),
+        (r"| '=='", "return EQ"),
+        (r"| '!='", "return NE"),
         (r"| '<'", "return LT"),
         (r"| '>'", "return GT"),
         (r"| '<='", "return LE"),
         (r"| '>='", "return GE"),
-        (r"| '=='", "return EQ"),
-        (r"| '!='", "return NE"),
+        (r"| '('", "return LPAREN"),
+        (r"| ')'", "return RPAREN"),
+        (r"| '['", "return LBRACKET"),
+        (r"| ']'", "return RBRACKET"),
+        (r"| '{'", "return LBRACE"),
+        (r"| '}'", "return RBRACE"),
+        (r"| ':'", "return COLON"),
+        (r"| ','", "return COMMA"),
+        (r"| '.'", "return DOT"),
+        (r"| 'and'", "return AND"),
+        (r"| 'or'", "return OR"),
+        (r"| 'not'", "return NOT"),
+        (r"| id", "return IDENTIFIER"),
         (r"| eof", "raise('Fin de buffer')"),
-        (r"| .", "raise('Error léxico: Caracter no reconocido'  + lxm)"),
+        (r"| .", "raise('Error léxico: Caracter no reconocido' + lxm)"),
         (r".", "ERROR")
         ]
 

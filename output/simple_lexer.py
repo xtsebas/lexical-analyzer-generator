@@ -1,3 +1,4 @@
+
 import re
 
 class Lexer:
@@ -7,23 +8,28 @@ class Lexer:
         self.errors = []
         self.token_definitions = {
         "digit": r"['0'-'9']",
-        "letter": r"['a'-'z' 'A'-'Z']",
+        "letter": r"['a'-'z' 'A'-'Z' '_']",
         "id": r"letter (letter | digit)*",
-        "number": r"digit+"
+        "number": r"digit+",
+        "keyword": r"'print' | 'return' | 'None' | 'True' | 'False'"
         }
         self.token_rules = [
         (r"[' ' '\t']", "return lexbuf"),
         (r"| '\n'", "return EOL"),
-        (r"| number", "return int(lxm)"),
+        (r"| '#' (_ # '\n')*", "return lexbuf"),
+        (r"| keyword", "return KEYWORD"),
+        (r"| number", "return INT"),
         (r"| '+'", "return PLUS"),
         (r"| '-'", "return MINUS"),
         (r"| '*'", "return TIMES"),
+        (r"| '**'", "return POWER"),
         (r"| '/'", "return DIV"),
+        (r"| '//'", "return FLOOR_DIV"),
         (r"| '('", "return LPAREN"),
         (r"| ')'", "return RPAREN"),
         (r"| id", "return IDENTIFIER"),
         (r"| eof", "raise('Fin de buffer')"),
-        (r"| .", "raise('Error léxico: Caracter no reconocido'  + lxm)"),
+        (r"| .", "raise('Error léxico: Caracter no reconocido' + lxm)"),
         (r".", "ERROR")
         ]
 

@@ -1,3 +1,4 @@
+
 import re
 
 class Lexer:
@@ -7,27 +8,32 @@ class Lexer:
         self.errors = []
         self.token_definitions = {
         "digit": r"['0'-'9']",
-        "letter": r"['a'-'z' 'A'-'Z']",
+        "letter": r"['a'-'z' 'A'-'Z' '_']",
         "id": r"letter (letter | digit)*",
         "number": r"digit+",
-        "string": r"'"' (letter | digit | ' ' | [!-/])* '"'"
+        "string": r"'"' (_ # '"')* '"' | "'" (_ # "'")* "'"",
+        "comment": r"'#' (_ # '\n')*",
+        "keyword": r"'if' | 'else' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' | 'as' |"
         }
         self.token_rules = [
         (r"[' ' '\t']", "return lexbuf"),
         (r"| '\n'", "return EOL"),
-        (r"| number", "return int(lxm)"),
+        (r"| comment", "return lexbuf"),
+        (r"| keyword", "return KEYWORD"),
+        (r"| number", "return INT"),
         (r"| string", "return STRING"),
         (r"| '+'", "return PLUS"),
         (r"| '-'", "return MINUS"),
         (r"| '*'", "return TIMES"),
+        (r"| '**'", "return POWER"),
         (r"| '/'", "return DIV"),
+        (r"| '//'", "return FLOOR_DIV"),
+        (r"| '='", "return ASSIGN"),
         (r"| '('", "return LPAREN"),
         (r"| ')'", "return RPAREN"),
         (r"| id", "return IDENTIFIER"),
-        (r"| '='", "return ASSIGN"),
-        (r"| ';'", "return SEMICOLON"),
         (r"| eof", "raise('Fin de buffer')"),
-        (r"| .", "raise('Error léxico: Caracter no reconocido'  + lxm)"),
+        (r"| .", "raise('Error léxico: Caracter no reconocido' + lxm)"),
         (r".", "ERROR")
         ]
 

@@ -1,24 +1,31 @@
-(* simple.yal - Analizador léxico básico *)
-(* Este archivo reconoce números enteros, operadores básicos y paréntesis *)
+(* simple_python.yal - Analizador léxico básico para Python *)
 {
 import myToken
 }
 
+(* Definición de tokens *)
 let digit = ['0'-'9']
-let letter = ['a'-'z' 'A'-'Z']
+let letter = ['a'-'z' 'A'-'Z' '_']
 let id = letter (letter | digit)*
 let number = digit+
 
+(* Palabras clave básicas de Python *)
+let keyword = 'print' | 'return' | 'None' | 'True' | 'False'
+
 rule gettoken =
-  [' ' '\t'] { return lexbuf } (* Ignorar espacios en blanco *)
+  [' ' '\t'] { return lexbuf }  (* Ignorar espacios en blanco *)
 | '\n' { return EOL }
-| number { return int(lxm) }
+| '#' (_ # '\n')* { return lexbuf }  (* Ignorar comentarios *)
+| keyword { return KEYWORD }
+| number { return INT }
 | '+' { return PLUS }
 | '-' { return MINUS }
 | '*' { return TIMES }
+| '**' { return POWER }
 | '/' { return DIV }
+| '//' { return FLOOR_DIV }
 | '(' { return LPAREN }
 | ')' { return RPAREN }
 | id { return IDENTIFIER }
 | eof { raise('Fin de buffer') }
-| . { raise('Error léxico: Caracter no reconocido'  + lxm) }
+| . { raise('Error léxico: Caracter no reconocido' + lxm) }

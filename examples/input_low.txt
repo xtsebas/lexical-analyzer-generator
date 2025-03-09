@@ -1,1 +1,4 @@
-# Archivo de entrada con complejidad baja
+# Archivo de entrada con complejidad baja# Esto es un comentario
+print(10 + 5)
+x = 4 ** 2
+return x // 2
