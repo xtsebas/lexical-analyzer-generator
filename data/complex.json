@@ -2,8 +2,8 @@
     "filename": "examples/complex.yal",
     "header": "",
     "definitions": {
-        "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z' '_']",
+        "digit": "[0-9]",
+        "letter": "[a-zA-Z_]",
         "id": "letter (letter | digit)*",
         "number": "digit+",
         "float": "digit+ '.' digit+",
@@ -15,150 +15,150 @@
     "rules": [
         [
             "[' ' '\\t']",
-            "return lexbuf"
+            "return None"
         ],
         [
-            "| '\\n'",
+            "'\\n'",
             "return EOL"
         ],
         [
-            "| comment",
-            "return lexbuf"
+            "comment",
+            "return None"
         ],
         [
-            "| keyword",
+            "keyword",
             "return KEYWORD"
         ],
         [
-            "| number",
+            "number",
             "return INT"
         ],
         [
-            "| float",
+            "float",
             "return FLOAT"
         ],
         [
-            "| string",
+            "string",
             "return STRING"
         ],
         [
-            "| triple_string",
+            "triple_string",
             "return STRING"
         ],
         [
-            "| '+'",
+            "'+'",
             "return PLUS"
         ],
         [
-            "| '-'",
+            "'-'",
             "return MINUS"
         ],
         [
-            "| '*'",
+            "'*'",
             "return TIMES"
         ],
         [
-            "| '**'",
+            "'**'",
             "return POWER"
         ],
         [
-            "| '/'",
+            "'/'",
             "return DIV"
         ],
         [
-            "| '//'",
+            "'//'",
             "return FLOOR_DIV"
         ],
         [
-            "| '%'",
+            "'%'",
             "return MOD"
         ],
         [
-            "| '='",
+            "'='",
             "return ASSIGN"
         ],
         [
-            "| '=='",
+            "'=='",
             "return EQ"
         ],
         [
-            "| '!='",
+            "'!='",
             "return NE"
         ],
         [
-            "| '<'",
+            "'<'",
             "return LT"
         ],
         [
-            "| '>'",
+            "'>'",
             "return GT"
         ],
         [
-            "| '<='",
+            "'<='",
             "return LE"
         ],
         [
-            "| '>='",
+            "'>='",
             "return GE"
         ],
         [
-            "| '('",
+            "'('",
             "return LPAREN"
         ],
         [
-            "| ')'",
+            "')'",
             "return RPAREN"
         ],
         [
-            "| '['",
+            "'['",
             "return LBRACKET"
         ],
         [
-            "| ']'",
+            "']'",
             "return RBRACKET"
         ],
         [
-            "| '{'",
+            "'{'",
             "return LBRACE"
         ],
         [
-            "| '}'",
+            "'}'",
             "return RBRACE"
         ],
         [
-            "| ':'",
+            "':'",
             "return COLON"
         ],
         [
-            "| ','",
+            "','",
             "return COMMA"
         ],
         [
-            "| '.'",
+            "'.'",
             "return DOT"
         ],
         [
-            "| 'and'",
+            "'and'",
             "return AND"
         ],
         [
-            "| 'or'",
+            "'or'",
             "return OR"
         ],
         [
-            "| 'not'",
+            "'not'",
             "return NOT"
         ],
         [
-            "| id",
+            "id",
             "return IDENTIFIER"
         ],
         [
-            "| eof",
+            "eof",
             "raise('Fin de buffer')"
         ],
         [
-            "| .",
+            ".",
             "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],

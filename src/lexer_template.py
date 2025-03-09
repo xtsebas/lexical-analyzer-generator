@@ -1,6 +1,7 @@
 # Plantilla base para el analizador léxico generado
 LEXER_TEMPLATE = """
 import re
+from src.regex_parse import parse_regex
 
 class Lexer:
     def __init__(self, input_text):
@@ -23,7 +24,9 @@ class Lexer:
                 match = regex.match(self.input_text, pos)
                 if match:
                     lexeme = match.group(0)
-                    if token_name == "ERROR":
+                    if token_name is None:
+                        pass  # Ignorar espacios o comentarios
+                    elif token_name == "ERROR":
                         self.errors.append(f"Error léxico en posición {{pos}}: {{lexeme}}")
                     else:
                         self.tokens.append((token_name, lexeme))
@@ -48,6 +51,12 @@ class Lexer:
                 print(f"  - Error en posición {{pos}}: '{{lexeme}}'")
         else:
             print("No se detectaron errores léxicos.")
+    
+    def verify_lexeme(self, lexeme):
+        for token_name, regex in self.token_definitions.items():
+            if parse_regex(lexeme, regex):
+                return token_name
+        return None
 
 def lexical_analyzer(text):
     lexer = Lexer(text)

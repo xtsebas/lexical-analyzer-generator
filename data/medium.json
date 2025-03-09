@@ -2,8 +2,8 @@
     "filename": "examples/medium.yal",
     "header": "",
     "definitions": {
-        "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z' '_']",
+        "digit": "[0-9]",
+        "letter": "[a-zA-Z_]",
         "id": "letter (letter | digit)*",
         "number": "digit+",
         "string": "'\"' (_ # '\"')* '\"' | \"'\" (_ # \"'\")* \"'\"",
@@ -13,74 +13,74 @@
     "rules": [
         [
             "[' ' '\\t']",
-            "return lexbuf"
+            "return None"
         ],
         [
-            "| '\\n'",
+            "'\\n'",
             "return EOL"
         ],
         [
-            "| comment",
-            "return lexbuf"
+            "comment",
+            "return None"
         ],
         [
-            "| keyword",
+            "keyword",
             "return KEYWORD"
         ],
         [
-            "| number",
+            "number",
             "return INT"
         ],
         [
-            "| string",
+            "string",
             "return STRING"
         ],
         [
-            "| '+'",
+            "'+'",
             "return PLUS"
         ],
         [
-            "| '-'",
+            "'-'",
             "return MINUS"
         ],
         [
-            "| '*'",
+            "'*'",
             "return TIMES"
         ],
         [
-            "| '**'",
+            "'**'",
             "return POWER"
         ],
         [
-            "| '/'",
+            "'/'",
             "return DIV"
         ],
         [
-            "| '//'",
+            "'//'",
             "return FLOOR_DIV"
         ],
         [
-            "| '='",
+            "'='",
             "return ASSIGN"
         ],
         [
-            "| '('",
+            "'('",
             "return LPAREN"
         ],
         [
-            "| ')'",
+            "')'",
             "return RPAREN"
         ],
         [
-            "| id",
+            "id",
             "return IDENTIFIER"
         ],
         [
-            "| eof",
+            "eof",
             "raise('Fin de buffer')"
         ],
         [
-            "| .",
+            ".",
             "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],

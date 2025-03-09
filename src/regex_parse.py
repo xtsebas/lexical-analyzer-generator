@@ -8,16 +8,11 @@ from regex_afd.src.minimization import minAFD
 
 #Parsea expresiones regulares y las convierte en un AFD
 # Input: expresiones regulares del archivo .yal
-# Output: estructura de datos representando un AFD
+# Output: evaluacion de cadema
 def parse_regex(cadena, regex):
     afd = regex_to_automaton(regex=regex)
     afd =  minAFD(afd)
-    aceptada = evaluar_cadena(afd, cadena)
-    if aceptada:
-        print(f"La cadena '{cadena}' es aceptada por el AFD.")
-    else:
-        print(f"La cadena '{cadena}' NO es aceptada por el AFD.")
-
+    return evaluar_cadena(afd, cadena)
 
 # Convierte una expresión regular en un autómata finito
 # Input: expresión regular
@@ -59,13 +54,8 @@ def regex_to_automaton(regex):
 
     # 7 Calcular Funcion Siguiente Posicion
     arbol = calcular_siguiente_pos(arbol)
-    
-    print("\nFollowpos (Posición : Caracter : {posiciones siguientes}):")
-    for pos, info in sorted(arbol.followpos.items()):
-        print(f"{pos} : '{info['valor']}' : {info['siguientes']}")
 
     #8, 9 tabla de transiciones y AFD
     afd = construir_afd(arbol=arbol)
-    afd.imprimir()
     
     return afd

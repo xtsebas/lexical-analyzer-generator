@@ -97,6 +97,9 @@ class YALexParser:
                 rule_match = re.match(r"(.+)\s+\{(.+)\}", line)
                 if rule_match:
                     token, action = rule_match.groups()
+                    token = token.lstrip('|').strip()
+                    if action.strip() == "return lexbuf":
+                        action = "return None"
                     self.rules.append((token.strip(), action.strip()))
 
 

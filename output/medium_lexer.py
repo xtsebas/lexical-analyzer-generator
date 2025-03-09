@@ -1,5 +1,6 @@
 
 import re
+from src.regex_parse import parse_regex
 
 class Lexer:
     def __init__(self, input_text):
@@ -7,8 +8,8 @@ class Lexer:
         self.tokens = []
         self.errors = []
         self.token_definitions = {
-        "digit": r"['0'-'9']",
-        "letter": r"['a'-'z' 'A'-'Z' '_']",
+        "digit": r"[0-9]",
+        "letter": r"[a-zA-Z_]",
         "id": r"letter (letter | digit)*",
         "number": r"digit+",
         "string": r"'"' (_ # '"')* '"' | "'" (_ # "'")* "'"",
@@ -16,24 +17,24 @@ class Lexer:
         "keyword": r"'if' | 'else' | 'while' | 'for' | 'def' | 'return' | 'import' | 'from' | 'as' |"
         }
         self.token_rules = [
-        (r"[' ' '\t']", "return lexbuf"),
-        (r"| '\n'", "return EOL"),
-        (r"| comment", "return lexbuf"),
-        (r"| keyword", "return KEYWORD"),
-        (r"| number", "return INT"),
-        (r"| string", "return STRING"),
-        (r"| '+'", "return PLUS"),
-        (r"| '-'", "return MINUS"),
-        (r"| '*'", "return TIMES"),
-        (r"| '**'", "return POWER"),
-        (r"| '/'", "return DIV"),
-        (r"| '//'", "return FLOOR_DIV"),
-        (r"| '='", "return ASSIGN"),
-        (r"| '('", "return LPAREN"),
-        (r"| ')'", "return RPAREN"),
-        (r"| id", "return IDENTIFIER"),
-        (r"| eof", "raise('Fin de buffer')"),
-        (r"| .", "raise('Error léxico: Caracter no reconocido' + lxm)"),
+        (r"[' ' '\t']", "return None"),
+        (r"'\n'", "return EOL"),
+        (r"comment", "return None"),
+        (r"keyword", "return KEYWORD"),
+        (r"number", "return INT"),
+        (r"string", "return STRING"),
+        (r"'+'", "return PLUS"),
+        (r"'-'", "return MINUS"),
+        (r"'*'", "return TIMES"),
+        (r"'**'", "return POWER"),
+        (r"'/'", "return DIV"),
+        (r"'//'", "return FLOOR_DIV"),
+        (r"'='", "return ASSIGN"),
+        (r"'('", "return LPAREN"),
+        (r"')'", "return RPAREN"),
+        (r"id", "return IDENTIFIER"),
+        (r"eof", "raise('Fin de buffer')"),
+        (r".", "raise('Error léxico: Caracter no reconocido' + lxm)"),
         (r".", "ERROR")
         ]
 
@@ -46,7 +47,9 @@ class Lexer:
                 match = regex.match(self.input_text, pos)
                 if match:
                     lexeme = match.group(0)
-                    if token_name == "ERROR":
+                    if token_name is None:
+                        pass  # Ignorar espacios o comentarios
+                    elif token_name == "ERROR":
                         self.errors.append(f"Error léxico en posición {pos}: {lexeme}")
                     else:
                         self.tokens.append((token_name, lexeme))
@@ -71,6 +74,12 @@ class Lexer:
                 print(f"  - Error en posición {pos}: '{lexeme}'")
         else:
             print("No se detectaron errores léxicos.")
+    
+    def verify_lexeme(self, lexeme):
+        for token_name, regex in self.token_definitions.items():
+            if parse_regex(lexeme, regex):
+                return token_name
+        return None
 
 def lexical_analyzer(text):
     lexer = Lexer(text)

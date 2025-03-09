@@ -2,8 +2,8 @@
     "filename": "examples/simple.yal",
     "header": "",
     "definitions": {
-        "digit": "['0'-'9']",
-        "letter": "['a'-'z' 'A'-'Z' '_']",
+        "digit": "[0-9]",
+        "letter": "[a-zA-Z_]",
         "id": "letter (letter | digit)*",
         "number": "digit+",
         "keyword": "'print' | 'return' | 'None' | 'True' | 'False'"
@@ -11,66 +11,66 @@
     "rules": [
         [
             "[' ' '\\t']",
-            "return lexbuf"
+            "return None"
         ],
         [
-            "| '\\n'",
+            "'\\n'",
             "return EOL"
         ],
         [
-            "| '#' (_ # '\\n')*",
-            "return lexbuf"
+            "'#' (_ # '\\n')*",
+            "return None"
         ],
         [
-            "| keyword",
+            "keyword",
             "return KEYWORD"
         ],
         [
-            "| number",
+            "number",
             "return INT"
         ],
         [
-            "| '+'",
+            "'+'",
             "return PLUS"
         ],
         [
-            "| '-'",
+            "'-'",
             "return MINUS"
         ],
         [
-            "| '*'",
+            "'*'",
             "return TIMES"
         ],
         [
-            "| '**'",
+            "'**'",
             "return POWER"
         ],
         [
-            "| '/'",
+            "'/'",
             "return DIV"
         ],
         [
-            "| '//'",
+            "'//'",
             "return FLOOR_DIV"
         ],
         [
-            "| '('",
+            "'('",
             "return LPAREN"
         ],
         [
-            "| ')'",
+            "')'",
             "return RPAREN"
         ],
         [
-            "| id",
+            "id",
             "return IDENTIFIER"
         ],
         [
-            "| eof",
+            "eof",
             "raise('Fin de buffer')"
         ],
         [
-            "| .",
+            ".",
             "raise('Error léxico: Caracter no reconocido' + lxm)"
         ]
     ],
