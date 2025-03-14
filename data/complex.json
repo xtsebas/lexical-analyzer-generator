@@ -3,7 +3,7 @@
     "header": "",
     "definitions": {
         "digit": "[0-9]",
-        "letter": "[a-zA-Z_]",
+        "ter": "[a-zA-Z_]",
         "id": "letter (letter | digit)*",
         "number": "digit+",
         "float": "digit+ '.' digit+",
@@ -118,8 +118,8 @@
             "return RBRACKET"
         ],
         [
-            "'{'",
-            "return LBRACE"
+            "'",
+            "'"
         ],
         [
             "'}'",

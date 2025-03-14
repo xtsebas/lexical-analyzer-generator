@@ -1,6 +1,5 @@
 # Plantilla base para el analizador lexico generado
 LEXER_TEMPLATE = """
-import re
 from src.regex_parse import parse_regex
 
 class Lexer:
@@ -20,10 +19,9 @@ class Lexer:
         while pos < len(self.input_text):
             match = None
             for pattern, token_name in self.token_rules:
-                regex = re.compile(pattern)
-                match = regex.match(self.input_text, pos)
-                if match:
-                    lexeme = match.group(0)
+                # Verificar si el lexema coincide con el patrón usando parse_regex
+                lexeme = self._get_lexeme(pos, pattern)
+                if lexeme:
                     if token_name is None:
                         pass  # Ignorar espacios o comentarios
                     elif token_name == "ERROR":
@@ -35,6 +33,15 @@ class Lexer:
             if not match:
                 raise ValueError(f"Error lexico en posicion {{pos}}: {{self.input_text[pos]}}")
         return self.tokens, self.errors
+
+    def _get_lexeme(self, pos: int, pattern: str) -> str:
+        max_lexeme = ""
+        for end_pos in range(pos + 1, len(self.input_text) + 1):
+            lexeme = self.input_text[pos:end_pos]
+            if parse_regex(lexeme, pattern):
+                if len(lexeme) > len(max_lexeme):
+                    max_lexeme = lexeme
+        return max_lexeme if max_lexeme else None
     
     def print_tokens(self):
         if self.tokens:

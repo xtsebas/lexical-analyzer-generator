@@ -1,5 +1,4 @@
 
-import re
 from src.regex_parse import parse_regex
 
 class Lexer:
@@ -9,8 +8,8 @@ class Lexer:
         self.errors = []
         self.token_definitions = {
         "digit": r"[0-9]",
-        "letter": r"[a-zA-Z_]",
-        "id": r"([a-zA-Z_]) (([a-zA-Z_]) | ([0-9]))*",
+        "ter": r"[a-zA-Z_]",
+        "id": r"let([a-zA-Z_]) (let([a-zA-Z_]) | ([0-9]))*",
         "number": r"([0-9])+",
         "keyword": r"'print' | 'return' | 'None' | 'True' | 'False'"
         }
@@ -29,7 +28,7 @@ class Lexer:
         (r"//", "return FLOOR_DIV"),
         (r"\(", "return LPAREN"),
         (r"\)", "return RPAREN"),
-        (r"([a-zA-Z_]) (([a-zA-Z_]) | ([0-9]))*", "return IDENTIFIER"),
+        (r"let([a-zA-Z_]) (let([a-zA-Z_]) | ([0-9]))*", "return IDENTIFIER"),
         (r"eof", "raise('Fin de buffer')"),
         (r".", "raise('Error lexico: Caracter no reconocido' + lxm)"),
         (r"=", "return ASSIGN"),
@@ -41,10 +40,9 @@ class Lexer:
         while pos < len(self.input_text):
             match = None
             for pattern, token_name in self.token_rules:
-                regex = re.compile(pattern)
-                match = regex.match(self.input_text, pos)
-                if match:
-                    lexeme = match.group(0)
+                # Verificar si el lexema coincide con el patrón usando parse_regex
+                lexeme = self._get_lexeme(pos, pattern)
+                if lexeme:
                     if token_name is None:
                         pass  # Ignorar espacios o comentarios
                     elif token_name == "ERROR":
@@ -56,6 +54,15 @@ class Lexer:
             if not match:
                 raise ValueError(f"Error lexico en posicion {pos}: {self.input_text[pos]}")
         return self.tokens, self.errors
+
+    def _get_lexeme(self, pos: int, pattern: str) -> str:
+        max_lexeme = ""
+        for end_pos in range(pos + 1, len(self.input_text) + 1):
+            lexeme = self.input_text[pos:end_pos]
+            if parse_regex(lexeme, pattern):
+                if len(lexeme) > len(max_lexeme):
+                    max_lexeme = lexeme
+        return max_lexeme if max_lexeme else None
     
     def print_tokens(self):
         if self.tokens:

@@ -1,6 +1,5 @@
 import os
 import sys
-import re
 import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.lexer_template import LEXER_TEMPLATE
@@ -114,10 +113,12 @@ class YALexParser:
                 continue
 
             # Extraer definiciones de expresiones regulares (let ident = regexp)
-            let_match = re.match(r"let (\w+)\s*=\s*(.+)", line)
-            if let_match:
-                name, regex = let_match.groups()
-                self.definitions[name] = regex
+            if line.startswith("let "):
+                parts = line.split("=")
+                if len(parts) == 2:
+                    name = parts[0].replace("let", "").strip()
+                    regex = parts[1].strip()
+                    self.definitions[name] = regex
                 continue
 
             # Detectar el inicio de la sección rule
@@ -127,13 +128,13 @@ class YALexParser:
 
             # Extraer reglas léxicas en la sección rule
             if in_rule_section:
-                rule_match = re.match(r"(.+)\s+\{(.+)\}", line)
-                if rule_match:
-                    token, action = rule_match.groups()
-                    token = token.lstrip('|').strip()
-                    if action.strip() == "return lexbuf":
+                if "{" in line and "}" in line:
+                    parts = line.split("{")
+                    token = parts[0].strip().lstrip('|').strip()
+                    action = parts[1].split("}")[0].strip()
+                    if action == "return lexbuf":
                         action = "return None"
-                    self.rules.append((token.strip(), action.strip()))
+                    self.rules.append((token, action))
 
 
     # Guardar el resultado en un json
